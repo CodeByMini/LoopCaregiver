@@ -14,6 +14,7 @@
 		A9EC199C2920467E0022D39F /* NightscoutClient in Frameworks */ = {isa = PBXBuildFile; productRef = A9EC199B2920467E0022D39F /* NightscoutClient */; };
 		A9EC199E292101550022D39F /* TreatmentGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EC199D292101550022D39F /* TreatmentGraph.swift */; };
 		A9EC19A1292128D60022D39F /* BolusAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EC19A0292128D60022D39F /* BolusAnnotationView.swift */; };
+		A9EC19A4292141980022D39F /* OneTimePassword in Frameworks */ = {isa = PBXBuildFile; productRef = A9EC19A3292141980022D39F /* OneTimePassword */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A9EC199C2920467E0022D39F /* NightscoutClient in Frameworks */,
+				A9EC19A4292141980022D39F /* OneTimePassword in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -101,6 +103,7 @@
 			name = LoopCaregiver;
 			packageProductDependencies = (
 				A9EC199B2920467E0022D39F /* NightscoutClient */,
+				A9EC19A3292141980022D39F /* OneTimePassword */,
 			);
 			productName = LoopCaregiver;
 			productReference = A9EC1978291FEF940022D39F /* LoopCaregiver.app */;
@@ -132,6 +135,7 @@
 			mainGroup = A9EC196F291FEF940022D39F;
 			packageReferences = (
 				A9EC199A2920467E0022D39F /* XCRemoteSwiftPackageReference "NightscoutClient" */,
+				A9EC19A2292141980022D39F /* XCRemoteSwiftPackageReference "OneTimePassword" */,
 			);
 			productRefGroup = A9EC1979291FEF940022D39F /* Products */;
 			projectDirPath = "";
@@ -373,6 +377,14 @@
 				kind = branch;
 			};
 		};
+		A9EC19A2292141980022D39F /* XCRemoteSwiftPackageReference "OneTimePassword" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mattrubin/OneTimePassword.git";
+			requirement = {
+				branch = develop;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -380,6 +392,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A9EC199A2920467E0022D39F /* XCRemoteSwiftPackageReference "NightscoutClient" */;
 			productName = NightscoutClient;
+		};
+		A9EC19A3292141980022D39F /* OneTimePassword */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A9EC19A2292141980022D39F /* XCRemoteSwiftPackageReference "OneTimePassword" */;
+			productName = OneTimePassword;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
