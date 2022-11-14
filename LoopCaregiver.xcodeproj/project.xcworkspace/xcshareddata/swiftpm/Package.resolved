@@ -24,7 +24,7 @@
       "location" : "https://github.com/gestrich/NightscoutClient.git",
       "state" : {
         "branch" : "main",
-        "revision" : "7ecd76900ecba20aa7eba9bfa1de9d4262ea2e85"
+        "revision" : "fc47d7969c20b068f0c1de4c0fb43554971d8f07"
       }
     },
     {
@@ -59,8 +59,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-crypto.git",
       "state" : {
-        "revision" : "d9825fa541df64b1a7b182178d61b9a82730d01f",
-        "version" : "2.1.0"
+        "revision" : "f652300628eb2003449e627f1f394a27ea2af9a8",
+        "version" : "2.2.0"
       }
     },
     {
