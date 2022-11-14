@@ -14,6 +14,7 @@ struct TreatmentGraph: View {
     @State var bolusEntryGraphItems: [GraphItem] = []
     @State var carbEntryGraphItems: [GraphItem] = []
     let nightscoutClient: NightscoutService
+    let timer = Timer.publish(every: 30, on: .main, in: .common).autoconnect()
     let nowDate: () -> Date
     
     var body: some View {
@@ -62,15 +63,19 @@ struct TreatmentGraph: View {
                     }
             }
         }
-
         .onAppear(perform: {
             Task {
                 try await updateData()
             }
         })
+        .onReceive(timer) { input in
+            Task {
+                try await updateData()
+            }
+        }
     }
 
-    
+    @MainActor
     func updateData() async throws {
         let egvs = try await fetchEGVs()
         graphItems = egvs.map({$0.graphItem()})
