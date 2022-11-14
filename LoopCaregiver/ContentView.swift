@@ -20,26 +20,35 @@ struct ContentView: View {
 //    static let nowDate: () -> Date = {Date().addingTimeInterval(-60*60*16)}
     static let nowDate: () -> Date = {Date()}
     
-    let client = NightscoutService(baseURL: Self.nightscoutURL, secret: Self.nightscoutSecret, referenceDate: Self.nowDate())
+    let nightscoutService = NightscoutService(baseURL: Self.nightscoutURL, secret: Self.nightscoutSecret, referenceDate: Self.nowDate())
     
     var body: some View {
         VStack {
             HStack {
                 Text(formattedEGVValue())
                     .font(.largeTitle)
+                    .foregroundColor(egvValueColor())
                     .padding()
                 Spacer()
             }
             Spacer()
-            TreatmentGraph(nightscoutClient: client, nowDate: Self.nowDate)
+            TreatmentGraph(nightscoutClient: nightscoutService, nowDate: Self.nowDate)
             Spacer()
-            
+            ActionsView(nightscoutService: nightscoutService)
         }
         .onAppear(perform: {
             Task {
                 try await updateData()
             }
         })
+    }
+    
+    func egvValueColor() -> Color {
+        if let currentEGV = currentEGV {
+            return ColorType(egvValue: currentEGV.value).color
+        } else {
+            return .black
+        }
     }
     
     func formattedEGVValue() -> String {
@@ -59,7 +68,7 @@ struct ContentView: View {
     func fetchLatestEGV() async throws -> NightscoutEGV? {
         let minutesLookback = -30.0
         let startDate = Self.nowDate().addingTimeInterval(60 * minutesLookback)
-        return try await client.getEGVs(startDate:  startDate, endDate:nil)
+        return try await nightscoutService.getEGVs(startDate:  startDate, endDate:nil)
             .sorted(by: {$0.displayTime < $1.displayTime})
             .last
     }

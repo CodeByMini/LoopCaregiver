@@ -13,8 +13,12 @@
 		A9EC1983291FEF950022D39F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A9EC1982291FEF950022D39F /* Preview Assets.xcassets */; };
 		A9EC199C2920467E0022D39F /* NightscoutClient in Frameworks */ = {isa = PBXBuildFile; productRef = A9EC199B2920467E0022D39F /* NightscoutClient */; };
 		A9EC199E292101550022D39F /* TreatmentGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EC199D292101550022D39F /* TreatmentGraph.swift */; };
-		A9EC19A1292128D60022D39F /* BolusAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EC19A0292128D60022D39F /* BolusAnnotationView.swift */; };
+		A9EC19A1292128D60022D39F /* TreatmentAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EC19A0292128D60022D39F /* TreatmentAnnotationView.swift */; };
 		A9EC19A4292141980022D39F /* OneTimePassword in Frameworks */ = {isa = PBXBuildFile; productRef = A9EC19A3292141980022D39F /* OneTimePassword */; };
+		A9EC19A7292143110022D39F /* ActionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EC19A6292143110022D39F /* ActionsView.swift */; };
+		A9EC19A9292144040022D39F /* OverrideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EC19A8292144040022D39F /* OverrideView.swift */; };
+		A9EC19AB292156D80022D39F /* CarbInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EC19AA292156D80022D39F /* CarbInputView.swift */; };
+		A9EC19AD2921A19C0022D39F /* BolusInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EC19AC2921A19C0022D39F /* BolusInputView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,7 +28,11 @@
 		A9EC197F291FEF950022D39F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A9EC1982291FEF950022D39F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		A9EC199D292101550022D39F /* TreatmentGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreatmentGraph.swift; sourceTree = "<group>"; };
-		A9EC19A0292128D60022D39F /* BolusAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BolusAnnotationView.swift; sourceTree = "<group>"; };
+		A9EC19A0292128D60022D39F /* TreatmentAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreatmentAnnotationView.swift; sourceTree = "<group>"; };
+		A9EC19A6292143110022D39F /* ActionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionsView.swift; sourceTree = "<group>"; };
+		A9EC19A8292144040022D39F /* OverrideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverrideView.swift; sourceTree = "<group>"; };
+		A9EC19AA292156D80022D39F /* CarbInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarbInputView.swift; sourceTree = "<group>"; };
+		A9EC19AC2921A19C0022D39F /* BolusInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BolusInputView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +67,7 @@
 		A9EC197A291FEF940022D39F /* LoopCaregiver */ = {
 			isa = PBXGroup;
 			children = (
+				A9EC19A5292143030022D39F /* Actions */,
 				A9EC199F292128BC0022D39F /* TreatmentGraph */,
 				A9EC197B291FEF940022D39F /* LoopCaregiverApp.swift */,
 				A9EC197D291FEF940022D39F /* ContentView.swift */,
@@ -79,10 +88,21 @@
 		A9EC199F292128BC0022D39F /* TreatmentGraph */ = {
 			isa = PBXGroup;
 			children = (
-				A9EC19A0292128D60022D39F /* BolusAnnotationView.swift */,
+				A9EC19A0292128D60022D39F /* TreatmentAnnotationView.swift */,
 				A9EC199D292101550022D39F /* TreatmentGraph.swift */,
 			);
 			path = TreatmentGraph;
+			sourceTree = "<group>";
+		};
+		A9EC19A5292143030022D39F /* Actions */ = {
+			isa = PBXGroup;
+			children = (
+				A9EC19A6292143110022D39F /* ActionsView.swift */,
+				A9EC19AA292156D80022D39F /* CarbInputView.swift */,
+				A9EC19AC2921A19C0022D39F /* BolusInputView.swift */,
+				A9EC19A8292144040022D39F /* OverrideView.swift */,
+			);
+			path = Actions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -163,10 +183,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9EC19A9292144040022D39F /* OverrideView.swift in Sources */,
+				A9EC19A7292143110022D39F /* ActionsView.swift in Sources */,
 				A9EC197E291FEF940022D39F /* ContentView.swift in Sources */,
 				A9EC199E292101550022D39F /* TreatmentGraph.swift in Sources */,
+				A9EC19AB292156D80022D39F /* CarbInputView.swift in Sources */,
 				A9EC197C291FEF940022D39F /* LoopCaregiverApp.swift in Sources */,
-				A9EC19A1292128D60022D39F /* BolusAnnotationView.swift in Sources */,
+				A9EC19A1292128D60022D39F /* TreatmentAnnotationView.swift in Sources */,
+				A9EC19AD2921A19C0022D39F /* BolusInputView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,6 +327,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -332,6 +357,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

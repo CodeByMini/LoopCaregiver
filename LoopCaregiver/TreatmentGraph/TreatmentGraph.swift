@@ -12,6 +12,7 @@ import NightscoutClient
 struct TreatmentGraph: View {
     @State var graphItems: [GraphItem] = []
     @State var bolusEntryGraphItems: [GraphItem] = []
+    @State var carbEntryGraphItems: [GraphItem] = []
     let nightscoutClient: NightscoutService
     let nowDate: () -> Date
     
@@ -31,12 +32,24 @@ struct TreatmentGraph: View {
                 )
                 .foregroundStyle(by: .value("Reading", graphItem.colorType))
                 .annotation(position: .overlay, alignment: .center, spacing: 0) {
-                    return BolusAnnotationView(graphItem: graphItem)
+                    return TreatmentAnnotationView(graphItem: graphItem,
+                                               viewStyle: TreatmentAnnotationView.bolusViewStyle())
+                }
+            }
+            ForEach(carbEntryGraphItems) { graphItem in
+                PointMark(
+                    x: .value("Time", graphItem.displayTime),
+                    y: .value("Reading", graphItem.value)
+                )
+                .foregroundStyle(by: .value("Reading", graphItem.colorType))
+                .annotation(position: .overlay, alignment: .center, spacing: 0) {
+                    return TreatmentAnnotationView(graphItem: graphItem,
+                                               viewStyle: TreatmentAnnotationView.carbViewStyle())
                 }
             }
         }
         //Make sure the domain values line up with what is in foregroundStyle above.
-        .chartForegroundStyleScale(domain: GraphItem.ColorType.membersAsRange(), range: GraphItem.ColorType.allCases.map({$0.color}), type: .none)
+        .chartForegroundStyleScale(domain: ColorType.membersAsRange(), range: ColorType.allCases.map({$0.color}), type: .none)
         .chartOverlay { proxy in
             GeometryReader { geometry in
                 Rectangle().fill(.clear).contentShape(Rectangle()) //For taps
@@ -63,6 +76,9 @@ struct TreatmentGraph: View {
         graphItems = egvs.map({$0.graphItem()})
         let bolusEntries = try await fetchBolusEntries()
         bolusEntryGraphItems = bolusEntries.map({$0.graphItem(egvValues: egvs)})
+        
+        let carbEntries = try await fetchCarbEntries()
+        carbEntryGraphItems = carbEntries.map({$0.graphItem(egvValues: egvs)})
     }
     
     func fetchEGVs() async throws -> [NightscoutEGV] {
@@ -72,6 +88,10 @@ struct TreatmentGraph: View {
     
     func fetchBolusEntries() async throws -> [BolusEntry] {
         return try await nightscoutClient.getBolusTreatments(startDate: graphStartDate(), endDate: graphEndDate())
+    }
+    
+    func fetchCarbEntries() async throws -> [CarbEntry] {
+        return try await nightscoutClient.getCarbTreatments(startDate: graphStartDate(), endDate: graphEndDate())
     }
     
     func graphStartDate() -> Date {
@@ -87,78 +107,80 @@ struct TreatmentGraph: View {
     }
 }
 
-
-
 enum GraphItemType {
     case egv
     case bolus(BolusEntry)
-    case carb
+    case carb(CarbEntry)
 }
 
 struct GraphItem: Identifiable {
-    
-    enum ColorType: Int, Plottable, CaseIterable, Comparable {
-
-        var primitivePlottable: Int {
-            return self.rawValue
-        }
-        
-        typealias PrimitivePlottable = Int
-
-        case gray
-        case green
-        case yellow
-        case red
-        
-        init?(primitivePlottable: Int){
-            self.init(rawValue: primitivePlottable)
-        }
-        
-        var color: Color {
-            switch self {
-            case .gray:
-                return Color.gray
-            case .green:
-                return Color.green
-            case .yellow:
-                return Color.yellow
-            case .red:
-                return Color.red
-            }
-        }
-        
-        static func membersAsRange() -> ClosedRange<ColorType> {
-            return GraphItem.ColorType.allCases.first!...GraphItem.ColorType.allCases.last!
-        }
-        
-        //Comparable
-        static func < (lhs: GraphItem.ColorType, rhs: GraphItem.ColorType) -> Bool {
-            return lhs.rawValue < rhs.rawValue
-        }
-
-    }
-    
     
     var id = UUID()
     var type: GraphItemType
     var value: Int
     var displayTime: Date
-//    var color: Color
     
     var colorType: ColorType {
-        switch value {
-        case 0..<180:
-            return .green
-        case 180...249:
-            return .yellow
-        case 250...:
-            return .red
-        default:
-            assertionFailure("Uexpected range")
-            return .gray
-        }
+        return ColorType(egvValue: value)
     }
 }
+
+enum ColorType: Int, Plottable, CaseIterable, Comparable {
+
+    var primitivePlottable: Int {
+        return self.rawValue
+    }
+    
+    typealias PrimitivePlottable = Int
+
+    case gray
+    case green
+    case yellow
+    case red
+    
+    init?(primitivePlottable: Int){
+        self.init(rawValue: primitivePlottable)
+    }
+    
+    init(egvValue: Int) {
+        switch egvValue {
+        case 0..<180:
+            self = ColorType.green
+        case 180...249:
+            self = ColorType.yellow
+        case 250...:
+            self = ColorType.red
+        default:
+            assertionFailure("Uexpected range")
+            self = ColorType.gray
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .gray:
+            return Color.gray
+        case .green:
+            return Color.green
+        case .yellow:
+            return Color.yellow
+        case .red:
+            return Color.red
+        }
+    }
+    
+    static func membersAsRange() -> ClosedRange<ColorType> {
+        return ColorType.allCases.first!...ColorType.allCases.last!
+    }
+    
+    //Comparable
+    static func < (lhs: ColorType, rhs: ColorType) -> Bool {
+        return lhs.rawValue < rhs.rawValue
+    }
+
+}
+
+
 
 extension NightscoutEGV: Identifiable {
     public var id: Date {
@@ -170,11 +192,11 @@ extension NightscoutEGV: Identifiable {
     }
 }
 
-extension BolusEntry {
+extension CarbEntry {
     
     func graphItem(egvValues: [NightscoutEGV]) -> GraphItem {
         let relativeEgvValue = interpolateEGVValue(egvs: egvValues, atDate: date) ?? 390
-        return GraphItem(type: .bolus(self), value: relativeEgvValue, displayTime: date)
+        return GraphItem(type: .carb(self), value: relativeEgvValue, displayTime: date)
     }
     
     func interpolateEGVValue(egvs: [NightscoutEGV], atDate date: Date ) -> Int? {
@@ -197,14 +219,43 @@ extension BolusEntry {
         
         return interpolateRange(range: (first: greatestPriorEGV.value, second: leastFollowingEGV.value), referenceRange: (first: greatestPriorEGV.displayTime, second: leastFollowingEGV.displayTime), refereceValue: date)
     }
+}
+
+extension BolusEntry {
     
-    func interpolateRange(range: (first: Int, second: Int), referenceRange: (first: Date, second: Date), refereceValue: Date) -> Int {
-        let referenceRangeDistance = referenceRange.second.timeIntervalSince1970 - referenceRange.first.timeIntervalSince1970
-        let lowerRangeToValueDifference = refereceValue.timeIntervalSince1970 - referenceRange.first.timeIntervalSince1970
-        let scaleFactor = lowerRangeToValueDifference / referenceRangeDistance
-        
-        let rangeDifference = range.first - range.second
-        return range.first + (rangeDifference * Int(scaleFactor))
-        
+    func graphItem(egvValues: [NightscoutEGV]) -> GraphItem {
+        let relativeEgvValue = interpolateEGVValue(egvs: egvValues, atDate: date) ?? 390
+        return GraphItem(type: .bolus(self), value: relativeEgvValue, displayTime: date)
     }
+}
+
+func interpolateEGVValue(egvs: [NightscoutEGV], atDate date: Date ) -> Int? {
+    
+    guard egvs.count >= 2 else {
+        return egvs.first?.value
+    }
+    
+    let priorEGVs = egvs.filter({$0.displayTime < date})
+    guard let greatestPriorEGV = priorEGVs.last else {
+        //All after, use first
+        return egvs.first?.value
+    }
+    
+    let laterEGVs = egvs.filter({$0.displayTime > date})
+    guard let leastFollowingEGV = laterEGVs.first else {
+        //All prior, use last
+        return egvs.last?.value
+    }
+    
+    return interpolateRange(range: (first: greatestPriorEGV.value, second: leastFollowingEGV.value), referenceRange: (first: greatestPriorEGV.displayTime, second: leastFollowingEGV.displayTime), refereceValue: date)
+}
+
+func interpolateRange(range: (first: Int, second: Int), referenceRange: (first: Date, second: Date), refereceValue: Date) -> Int {
+    let referenceRangeDistance = referenceRange.second.timeIntervalSince1970 - referenceRange.first.timeIntervalSince1970
+    let lowerRangeToValueDifference = refereceValue.timeIntervalSince1970 - referenceRange.first.timeIntervalSince1970
+    let scaleFactor = lowerRangeToValueDifference / referenceRangeDistance
+    
+    let rangeDifference = range.first - range.second
+    return range.first + (rangeDifference * Int(scaleFactor))
+    
 }
