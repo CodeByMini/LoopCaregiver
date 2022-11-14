@@ -61,7 +61,7 @@ struct ContentView: View {
     
     func formattedEGVValue() -> String {
         if let currentEGV {
-            return String(currentEGV.value)
+            return String(Double(currentEGV.value))
         } else {
             return "?"
         }
@@ -70,7 +70,7 @@ struct ContentView: View {
     
     func formatEGV(_ egv: NightscoutEGV?) -> String {
         if let egv {
-            return String(egv.value)
+            return String(format:"%.1f", Float(egv.value)/Float(18))
         } else {
             return "?"
         }

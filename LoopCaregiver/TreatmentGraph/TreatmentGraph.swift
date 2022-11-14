@@ -29,7 +29,7 @@ struct TreatmentGraph: View {
             ForEach(bolusEntryGraphItems) { graphItem in
                 PointMark(
                     x: .value("Time", graphItem.displayTime),
-                    y: .value("Reading", graphItem.value)
+                    y: .value("Reading", graphItem.value/18)
                 )
                 .foregroundStyle(by: .value("Reading", graphItem.colorType))
                 .annotation(position: .overlay, alignment: .center, spacing: 0) {
@@ -40,7 +40,7 @@ struct TreatmentGraph: View {
             ForEach(carbEntryGraphItems) { graphItem in
                 PointMark(
                     x: .value("Time", graphItem.displayTime),
-                    y: .value("Reading", graphItem.value)
+                    y: .value("Reading", graphItem.value/18)
                 )
                 .foregroundStyle(by: .value("Reading", graphItem.colorType))
                 .annotation(position: .overlay, alignment: .center, spacing: 0) {
@@ -78,7 +78,7 @@ struct TreatmentGraph: View {
     @MainActor
     func updateData() async throws {
         let egvs = try await fetchEGVs()
-        graphItems = egvs.map({$0.graphItem()})
+        graphItems = egvs.map({$0.graphItemMMOL()})
         let bolusEntries = try await fetchBolusEntries()
         bolusEntryGraphItems = bolusEntries.map({$0.graphItem(egvValues: egvs)})
         
@@ -122,11 +122,11 @@ struct GraphItem: Identifiable {
     
     var id = UUID()
     var type: GraphItemType
-    var value: Int
+    var value: Float
     var displayTime: Date
     
     var colorType: ColorType {
-        return ColorType(egvValue: value)
+        return ColorType(egvValue: Int(value))
     }
 }
 
@@ -149,11 +149,11 @@ enum ColorType: Int, Plottable, CaseIterable, Comparable {
     
     init(egvValue: Int) {
         switch egvValue {
-        case 0..<180:
+        case 0..<180/18:
             self = ColorType.green
-        case 180...249:
+        case 180/18...249/18:
             self = ColorType.yellow
-        case 250...:
+        case Int(250/18)...:
             self = ColorType.red
         default:
             assertionFailure("Uexpected range")
@@ -195,13 +195,17 @@ extension NightscoutEGV: Identifiable {
     func graphItem() -> GraphItem {
         return GraphItem(type: .egv, value: value, displayTime: displayTime)
     }
+     func graphItemMMOL() -> GraphItem {
+        print(Float(value)/Float(18))
+        return GraphItem(type: .egv, value: Float(value)/Float(18), displayTime: displayTime)
+    }
 }
 
 extension CarbEntry {
     
     func graphItem(egvValues: [NightscoutEGV]) -> GraphItem {
         let relativeEgvValue = interpolateEGVValue(egvs: egvValues, atDate: date) ?? 390
-        return GraphItem(type: .carb(self), value: relativeEgvValue, displayTime: date)
+        return GraphItem(type: .carb(self), value: Float(Int(relativeEgvValue)), displayTime: date)
     }
     
     func interpolateEGVValue(egvs: [NightscoutEGV], atDate date: Date ) -> Int? {
@@ -230,7 +234,7 @@ extension BolusEntry {
     
     func graphItem(egvValues: [NightscoutEGV]) -> GraphItem {
         let relativeEgvValue = interpolateEGVValue(egvs: egvValues, atDate: date) ?? 390
-        return GraphItem(type: .bolus(self), value: relativeEgvValue, displayTime: date)
+        return GraphItem(type: .bolus(self), value: Float(Int(relativeEgvValue)), displayTime: date)
     }
 }
 
